@@ -1,0 +1,74 @@
+Login.aspx.cs
+
+using System;
+using MySql.Data.MySqlClient;
+using System.Configuration;
+
+namespace TritonWebApp
+{
+    public partial class Login : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnLogin_Click(object sender, EventArgs e)
+        {
+            errEmail.Text = errPassword.Text = "";
+
+            string email = txtEmail.Text;
+            string password = pwdPassword.Text;
+
+            int error = 0;
+
+            if (email == "")
+            {
+                errEmail.Text = "Enter email";
+                error++;
+            }
+
+            if (password == "")
+            {
+                errPassword.Text = "Enter password";
+                error++;
+            }
+
+            if (error == 0)
+            {
+                MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM users where email =@email and password =@password", conn);
+
+                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@password", password);
+
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        Session["sess_email"] = email;
+                        Session["LoggedIn"] = true;
+                        Response.Redirect("Dashboard.aspx");
+                    }
+                    else
+                    {
+                        lblMessage.Text = "Invalid credential";
+                    }
+                }catch  (MySqlException mex)
+                {
+                    lblMessage.Text = mex.Message;
+
+                }
+
+            }
+
+        }
+    }
+}
+
+
+
+

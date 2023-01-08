@@ -1,0 +1,9 @@
+<DOCTYPE 	html>
+<html>
+<head>
+<title> bootcamp</title>
+ </head>
+<body> 
+	TIC IT BOOTCAMP
+</body>
+</html>
